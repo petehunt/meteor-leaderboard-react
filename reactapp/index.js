@@ -7,16 +7,26 @@ var Players = new Meteor.Collection("players");
 
 Meteor.startup(function() {
   var App = ReactMeteor.createMeteorClass({
+    getInitialState: function() {
+      return {
+        selectedPlayerID: null
+      };
+    },
+
     getMeteorState: function() {
-      var player = Players.findOne(Session.get("selected_player"));
+      var player = Players.findOne(this.state.selectedPlayerID);
 
       return {
         selectedName: player && player.name
       };
     },
 
+    handleSelectPlayer: function(id) {
+      this.setState({selectedPlayerID: id});
+    },
+
     handleClick: function() {
-      Players.update(Session.get("selected_player"), {$inc: {score: 5}});
+      Players.update(this.state.selectedPlayerID, {$inc: {score: 5}});
     },
 
     render: function() {
@@ -40,7 +50,10 @@ Meteor.startup(function() {
 
       return (
         <div id="outer">
-          <Leaderboard />
+          <Leaderboard
+            selectedPlayerID={this.state.selectedPlayerID}
+            onSelectPlayer={this.handleSelectPlayer}
+          />
           {details}
         </div>
       );
@@ -56,8 +69,15 @@ Meteor.startup(function() {
 
     render: function() {
       var players = this.state.meteor.players.map(function(player) {
-        return <Player player={player} key={player._id} />;
-      });
+        return (
+          <Player
+            player={player}
+            key={player._id}
+            selectedPlayerID={this.props.selectedPlayerID}
+            onSelect={this.props.onSelectPlayer.bind(null, player._id)}
+          />
+        );
+      }, this);
       return (
         <div className="leaderboard">
           {players}
@@ -66,22 +86,12 @@ Meteor.startup(function() {
     }
   });
 
-  var Player = ReactMeteor.createMeteorClass({
-    getMeteorState: function() {
-      return {
-        selected: Session.equals("selected_player", this.props.player._id)
-      };
-    },
-
-    handleClick: function() {
-      Session.set("selected_player", this.props.player._id);
-    },
-
+  var Player = React.createClass({
     render: function() {
       return (
         <div
-          className={classSet({player: true, selected: this.state.meteor.selected})}
-          onClick={this.handleClick}>
+          className={classSet({player: true, selected: this.props.selectedPlayerID === this.props.player._id})}
+          onClick={this.props.onSelect}>
           <span className="name">{this.props.player.name}</span>
           <span className="score">{this.props.player.score}</span>
         </div>

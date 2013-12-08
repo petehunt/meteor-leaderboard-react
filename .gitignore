@@ -1,2 +1,4 @@
 node_modules
 *~
+meteorapp/browser-bundle.js
+meteorapp/browser-bundle.min.js
