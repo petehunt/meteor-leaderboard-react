@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "react": "http://petehunt.net/react/react-0.5.1.tar.gz",
-    "react-meteor": "~0.0.1",
+    "react-meteor": "~0.0.2",
     "react-classset": "~0.0.1"
   },
   "devDependencies": {
