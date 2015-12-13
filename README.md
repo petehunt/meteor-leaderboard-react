@@ -1,5 +1,7 @@
 # React + Meteor leaderboard example
 
+![unmaintained](http://img.shields.io/badge/status-unmaintained-red.png) 
+
 ## Getting started
 
   * `git clone https://github.com/petehunt/meteor-leaderboard-react.git`
